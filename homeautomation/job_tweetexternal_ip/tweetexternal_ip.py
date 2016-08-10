@@ -3,7 +3,8 @@ import json
 import urllib
 import os
 import uptime
-from datetime import datetime
+import time
+from datetime import datetime,timedelta
 from pprint import pprint
 
 from tweepy.streaming import StreamListener
@@ -11,6 +12,21 @@ from tweepy import OAuthHandler
 from tweepy import Stream
 from tweepy import API
 
+def have_internet():
+    import httplib
+    conn = httplib.HTTPConnection("jsonip.com")
+    try:
+        conn.request("HEAD", "/")
+        return True
+    except:
+        return False
+
+def wait_for_internet(timeout=60):
+  starttime = datetime.now()
+  endtime = starttime + timedelta(0,timeout)
+  while (not have_internet()) and (datetime.now() < endtime):
+    time.sleep(5)
+    
 def getTwitterAPIHandle():
   with open('api_secret_token.json') as data_file:    
     authdata = json.load(data_file)
@@ -38,6 +54,8 @@ def savedata(jsonfile,d):
     json.dump(d, f)
     
 if __name__ == '__main__':
+  wait_for_internet()
+  
   datafile = "data.json"
   olddata = {}
   newdata = {}
