@@ -46,7 +46,7 @@ if __name__ == '__main__':
   #print (uptime.boottime())
   
   #Consider the file only if it was modified after the last boot
-  if (datetime.fromtimestamp(os.path.getmtime(datafile))) > uptime.boottime(): 
+  if (os.path.isfile(datafile)) and ((datetime.fromtimestamp(os.path.getmtime(datafile))) > uptime.boottime()): 
     olddata = parsedata(datafile)
   
   api = getTwitterAPIHandle()
