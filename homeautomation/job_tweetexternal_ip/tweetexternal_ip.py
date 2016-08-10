@@ -2,7 +2,8 @@ from __future__ import absolute_import, print_function
 import json
 import urllib
 import os
-
+import uptime
+from datetime import datetime
 from pprint import pprint
 
 from tweepy.streaming import StreamListener
@@ -41,7 +42,12 @@ if __name__ == '__main__':
   olddata = {}
   newdata = {}
   
-  olddata = parsedata(datafile)
+  #print (datetime.fromtimestamp(os.path.getmtime(datafile)))
+  #print (uptime.boottime())
+  
+  #Consider the file only if it was modified after the last boot
+  if (datetime.fromtimestamp(os.path.getmtime(datafile))) > uptime.boottime(): 
+    olddata = parsedata(datafile)
   
   api = getTwitterAPIHandle()
   my_ip = json.load(urllib.urlopen('http://jsonip.com'))['ip']
