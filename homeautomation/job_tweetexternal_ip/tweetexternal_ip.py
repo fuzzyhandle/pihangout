@@ -54,7 +54,7 @@ def savedata(jsonfile,d):
     json.dump(d, f)
     
 if __name__ == '__main__':
-  wait_for_internet()
+  wait_for_internet(timeout=120)
   
   datafile = "data.json"
   olddata = {}
