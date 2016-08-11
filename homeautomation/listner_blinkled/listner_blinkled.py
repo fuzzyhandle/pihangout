@@ -7,7 +7,6 @@ from tweepy import API
 from itertools import ifilter
 
 import wiringpi
-import RPi.GPIO as GPIO
 
 wiringpi.wiringPiSetupGpio() # For GPIO pin numbering
 
@@ -46,7 +45,16 @@ def nFilter(filters, tuples):
     return tuples  
 
 def work():
-  pprint ("In Work function")
+  pin = 17
+  wiringpi.pinMode(pin,wiringpi.GPIO.OUTPUT)
+  try:
+    for i in range (0,3):
+      wiringpi.digitalWrite(pin,wiringpi.GPIO.HIGH)
+      wiringpi.delay(500)
+      wiringpi.digitalWrite(pin,wiringpi.GPIO.LOW)
+      wiringpi.delay(500)
+  finally:
+    wiringpi.digitalWrite(pin,wiringpi.GPIO.LOW)
   
 if __name__ == '__main__':
   datafile = "data.json"
@@ -66,13 +74,14 @@ if __name__ == '__main__':
   newdata = olddata
   
   for twt in nFilter(fl, dm):
-      text = twt.text.encode('utf-8')
-      #tweettime = twt.created_at
-      last_id = twt.id
-      newdata.update(message_id=last_id)
-      if text == "BLINK LED":
-        work()
-      savedata(datafile,newdata)  
+    text = twt.text.encode('utf-8')
+    #tweettime = twt.created_at
+    last_id = twt.id
+    newdata.update(message_id=last_id)
+    if text == "BLINK LED":
+      print ("Calling work")
+      work()
+    savedata(datafile,newdata)  
   newdata = {"last_checked_messageid":0}
   
   
